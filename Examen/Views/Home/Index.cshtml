@@ -1,0 +1,45 @@
+﻿@using PerpetuumSoft.Knockout
+@model Examen.Models.PersonaModel
+@{
+    ViewBag.Title = "Index";
+    var ko = Html.CreateKnockoutContext();
+}
+
+<h2>Examen</h2>
+<table>
+    <tr>
+        <td>Nombre:</td>
+        <td><input type="text" data-bind="nombre" /></td>
+    </tr>
+    <tr>
+        <td>Apellido:</td>
+        <td><input type="text" data-bind="apellido" /></td>
+    </tr>
+    <tr>
+        <td>Direccion:</td>
+        <td><input type="text" data-bind="direccion" /></td>
+    </tr>
+</table>
+<button type="button" onclick="guardar()">Guardar</button>
+@ko.Initialize(Model)
+<script type="text/javascript">
+    function guardar() {
+        var param = ko.toJSON({ modelo: viewModel });
+        $.ajax({
+            url: '@Url.Action("Home", "Grabar")',
+            type: "POST",
+            data: param,
+            contentType: "application/json",
+            success: function (result) {
+                if (result.tipo == 1) {
+                    ko.mapping.fromJS(viewModelJs, {}, viewModel);
+                }
+                alert(result.mensaje);
+            },
+            error: function (error, textStatus, errorThrown) {
+                alert(error.status + "---" + error.statusText + "\n" + textStatus + "---" + errorThrown);
+            }
+        });
+    }
+</script>
+@ko.Apply(Model)
